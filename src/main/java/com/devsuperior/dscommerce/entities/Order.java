@@ -34,7 +34,7 @@ public class Order {
 	private Set<OrderItem> items = new HashSet<>();
 
 	public Order(Long id, Instant moment, OrderStatus status, User client, Payment payment) {
-		super();
+	
 		this.id = id;
 		this.moment = moment;
 		this.status = status;
