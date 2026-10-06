@@ -1,9 +1,14 @@
 package com.devsuperior.dscommerce.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.devsuperior.dscommerce.entities.Category;
 import com.devsuperior.dscommerce.entities.Product;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -23,6 +28,9 @@ public class ProductDTO {
 	@Positive(message = "O preço deve ser positivo")
 	private Double price;
 	private String imgUrl;
+	
+	@NotEmpty(message = "Deve ter pelo menos uma categoria")
+	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public ProductDTO(Long id, String name, String description, Double price, String imgUrl) {
 		this.id = id;
@@ -32,13 +40,18 @@ public class ProductDTO {
 		this.imgUrl = imgUrl;
 	}
 
-	public ProductDTO(Product entity) {
-		id = entity.getId();
-		name = entity.getName();
-		description = entity.getDescription();
-		price = entity.getPrice();
-		imgUrl = entity.getImgUrl();
-	}
+    public ProductDTO(Product entity) {
+        id = entity.getId();
+        name = entity.getName();
+        description = entity.getDescription();
+        price = entity.getPrice();
+        imgUrl = entity.getImgUrl();
+        
+		for (Category cat : entity.getCategories()) {
+			categories.add(new CategoryDTO(cat));
+		}
+    }
+
 
 	public Long getId() {
 		return id;
@@ -60,4 +73,7 @@ public class ProductDTO {
 		return imgUrl;
 	}
 
+	public List<CategoryDTO> getCategories() {
+		return categories;
+	}
 }
