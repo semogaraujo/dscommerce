@@ -23,7 +23,7 @@ public class CustomPasswordAuthenticationConverter implements AuthenticationConv
 
 	@Nullable
 	@Override
-	public Authentication convert(HttpServletRequest request) {
+	public Authentication convert(HttpServletRequest request) {		
 		
 		String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
 				

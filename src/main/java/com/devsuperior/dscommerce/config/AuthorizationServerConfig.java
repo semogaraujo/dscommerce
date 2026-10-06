@@ -67,26 +67,33 @@ public class AuthorizationServerConfig {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	
 	@Bean
 	@Order(2)
 	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
 
-		//OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);		
-		OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =	new OAuth2AuthorizationServerConfigurer();
-				
-		http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher()).with(authorizationServerConfigurer, Customizer.withDefaults());
+	    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+	            new OAuth2AuthorizationServerConfigurer();
 
-		// @formatter:off
-		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
-				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
-				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder())));
+	    http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+	        .with(authorizationServerConfigurer, Customizer.withDefaults());
 
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
-		// @formatter:on
+	    http.csrf(csrf -> csrf.disable());
 
-		return http.build();
+	    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+	        .tokenEndpoint(tokenEndpoint -> tokenEndpoint
+	            .accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
+	            .authenticationProvider(new CustomPasswordAuthenticationProvider(
+	                    authorizationService(),
+	                    tokenGenerator(),
+	                    userDetailsService,
+	                    passwordEncoder())));
+
+	    http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
+
+	    return http.build();
 	}
+	
 
 	@Bean
 	public OAuth2AuthorizationService authorizationService() {
